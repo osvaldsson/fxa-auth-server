@@ -14,11 +14,11 @@ RUN useradd --create-home fxa
 
 USER fxa
 
-RUN mkdir -p /home/fxa/content-server
+RUN mkdir -p /home/fxa/auth-server
 
-ADD . /home/fxa/content-server/
+ADD . /home/fxa/auth-server/
 
-WORKDIR /home/fxa/content-server
+WORKDIR /home/fxa/auth-server
 
 # Run the Auth server
 
@@ -26,5 +26,8 @@ EXPOSE 9000
 EXPOSE 9001
 EXPOSE 7000
 
-ENTRYPOINT ["npm"]
-CMD ["start"]
+# Generate the keys
+
+RUN node /home/fxa/auth-server/scripts/gen_keys.js
+
+ENTRYPOINT ["/home/fxa/auth-server/scripts/start-server.sh"]
